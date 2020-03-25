@@ -278,6 +278,10 @@ class Env(object):
 
             value = default
 
+        # Interpolate any environment variables using ${...} syntax
+        if isinstance(value, str):
+            value = re.sub(r'\$\{(\w+)\}', lambda m, s=self: s.get_value(m.group(1)), value)
+
         # Resolve any proxied values
         if hasattr(value, 'startswith') and value.startswith('$'):
             value = value.lstrip('$')
